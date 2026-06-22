@@ -33,3 +33,7 @@ A comprehensive AI-powered platform designed to streamline the learning process,
 <img width="1920" height="1080" alt="Screenshot 2026-06-22 163131" src="https://github.com/user-attachments/assets/ed2368fa-e992-434f-b6b9-d6f23610c28b" />
 
 
+
+
+
+
