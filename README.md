@@ -31,6 +31,16 @@ A comprehensive AI-powered platform designed to streamline the learning process,
 
 
 <img width="1920" height="1080" alt="Screenshot 2026-06-22 163131" src="https://github.com/user-attachments/assets/ed2368fa-e992-434f-b6b9-d6f23610c28b" />
+<img width="1024" height="572" alt="7f7e2a10-7458-40a3-83ca-58a29b4a11a3" src="https://github.com/user-attachments/assets/b4ea84b8-f4e6-4b68-ae56-03b476731df6" />
+
+<img width="1024" height="572" alt="9d4e762b-f72a-4de0-8f2c-120c79d00861" src="https://github.com/user-attachments/assets/22c12554-093e-465b-8bd4-16cb701408f7" />
+
+<img width="1024" height="572" alt="b6c23247-e9af-441a-8907-aef5060e55ca" src="https://github.com/user-attachments/assets/90638a39-879d-40b4-be6b-d32a0c90843d" />
+
+<img width="1024" height="572" alt="dfc0685f-21fd-4dfe-99da-85cc4a863bfa" src="https://github.com/user-attachments/assets/5534d6ac-a398-49ec-8933-467c721caf95" />
+
+
+
 
 
 
