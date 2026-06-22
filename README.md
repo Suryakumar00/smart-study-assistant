@@ -1,5 +1,5 @@
 
-# Smart Study Assistant 📚
+# AI Smart Study Assistant 📚
 
 A comprehensive AI-powered platform designed to streamline the learning process, organize study materials, and provide intelligent assistance for students.
 
