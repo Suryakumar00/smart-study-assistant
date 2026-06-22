@@ -1,0 +1,19 @@
+polars
+connectorx
+xlsx2csv
+pyarrow
+ipython
+jupyterlab==4.2.5 # Pinned due to bugs in more recent versions
+plotly
+pandas
+matplotlib
+seaborn
+xlsxwriter
+altair
+hvplot
+fastexcel
+scikit-learn
+deltalake
+polars-ols 
+patsy
+numpy

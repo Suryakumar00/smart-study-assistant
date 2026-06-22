@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Smart Notes - StudyAI{% endblock %}
+{% block content %}
+<div class="container">
+    <h4 class="fw-bold mb-4"><i class="fas fa-sticky-note text-success me-2"></i>Smart Notes Generator</h4>
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Generate Notes</h6>
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" id="noteTitle" class="form-control" placeholder="Note title">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Paste Text</label>
+                        <textarea id="noteText" class="form-control" rows="6" placeholder="Paste your text, notes, or content here..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Or Upload File (PDF/TXT/Image)</label>
+                        <input type="file" id="noteFile" class="form-control" accept=".pdf,.txt,.png,.jpg,.jpeg">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Output Type</label>
+                        <select id="noteType" class="form-select">
+                            <option value="all">All (Summary + Bullets + Highlights)</option>
+                            <option value="summary">Summary Only</option>
+                            <option value="bullets">Bullet Points Only</option>
+                            <option value="highlights">Key Highlights Only</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success w-100" onclick="generateNotes()" id="genBtn">
+                        <i class="fas fa-magic me-2"></i>Generate Notes
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Generated Notes</h6>
+                    <div id="notesResult" class="notes-output text-muted">
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-alt fa-3x mb-3 opacity-25"></i>
+                            <p>Your generated notes will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if notes %}
+    <h5 class="fw-bold mt-5 mb-3">Saved Notes</h5>
+    <div class="row g-3">
+        {% for note in notes %}
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="fw-bold">{{ note.title }}</h6>
+                    <p class="text-muted small">{{ note.created_at.strftime('%b %d, %Y') }}</p>
+                    <p class="small text-truncate">{{ (note.summary or note.bullet_points or note.key_highlights)[:100] }}...</p>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteNote({{ note.id }}, this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function generateNotes() {
+    const btn = document.getElementById("genBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+
+    const formData = new FormData();
+    formData.append("title", document.getElementById("noteTitle").value || "Untitled");
+    formData.append("note_type", document.getElementById("noteType").value);
+    formData.append("text", document.getElementById("noteText").value);
+    const file = document.getElementById("noteFile").files[0];
+    if (file) formData.append("file", file);
+
+    const res = await fetch("/notes/generate", {method: "POST", body: formData});
+    const data = await res.json();
+
+    document.getElementById("notesResult").innerHTML = data.result
+        ? `<div class="notes-content">${marked.parse(data.result)}</div>`
+        : `<div class="alert alert-danger">${data.error}</div>`;
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate Notes';
+}
+
+async function deleteNote(id, btn) {
+    if (!confirm("Delete this note?")) return;
+    await fetch(`/notes/delete/${id}`, {method: "POST"});
+    btn.closest(".col-md-4").remove();
+}
+</script>
+{% endblock %}

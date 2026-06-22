@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Study Planner - StudyAI{% endblock %}
+{% block content %}
+<div class="container">
+    <h4 class="fw-bold mb-4"><i class="fas fa-calendar-alt text-info me-2"></i>Personalized Study Planner</h4>
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Create Study Plan</h6>
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input type="text" id="subject" class="form-control" placeholder="e.g. Mathematics, Data Structures">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Syllabus / Topics</label>
+                        <textarea id="syllabus" class="form-control" rows="4" placeholder="List the topics you need to cover..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Exam Deadline</label>
+                        <input type="date" id="deadline" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hours Available Per Day</label>
+                        <input type="number" id="hoursPerDay" class="form-control" value="3" min="1" max="12">
+                    </div>
+                    <button class="btn btn-info w-100 fw-bold text-white" onclick="generatePlan()" id="planBtn">
+                        <i class="fas fa-magic me-2"></i>Generate Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Your Study Plan</h6>
+                    <div id="planResult" class="text-muted">
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar fa-3x mb-3 opacity-25"></i>
+                            <p>Fill in the details and generate your personalized study plan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if plans %}
+    <h5 class="fw-bold mt-5 mb-3">Saved Plans</h5>
+    <div class="row g-3">
+        {% for plan in plans %}
+        <div class="col-md-4" id="plan-{{ plan.id }}">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h6 class="fw-bold">{{ plan.subject }}</h6>
+                    <p class="text-muted small">Deadline: {{ plan.deadline or 'N/A' }} | {{ plan.created_at.strftime('%b %d, %Y') }}</p>
+                    <p class="small text-truncate">{{ plan.plan_content[:120] }}...</p>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deletePlan({{ plan.id }})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function generatePlan() {
+    const btn = document.getElementById("planBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+
+    const res = await fetch("/planner/generate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            subject: document.getElementById("subject").value,
+            syllabus: document.getElementById("syllabus").value,
+            deadline: document.getElementById("deadline").value,
+            hours_per_day: document.getElementById("hoursPerDay").value
+        })
+    });
+    const data = await res.json();
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate Plan';
+
+    document.getElementById("planResult").innerHTML = data.plan
+        ? `<div class="plan-content">${marked.parse(data.plan)}</div>`
+        : `<div class="alert alert-danger">${data.error}</div>`;
+}
+
+async function deletePlan(id) {
+    if (!confirm("Delete this plan?")) return;
+    await fetch(`/planner/delete/${id}`, {method: "POST"});
+    document.getElementById(`plan-${id}`)?.remove();
+}
+</script>
+{% endblock %}

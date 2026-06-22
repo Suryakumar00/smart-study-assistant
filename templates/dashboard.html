@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - StudyAI{% endblock %}
+{% block content %}
+<div class="container">
+    <h4 class="fw-bold mb-4"><i class="fas fa-chart-bar text-danger me-2"></i>Performance Dashboard</h4>
+
+    <div class="row g-3 mb-4" id="statsRow">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3">
+                <div class="text-primary fs-1 fw-bold" id="totalQuizzes">-</div>
+                <div class="text-muted small">Total Quizzes</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3">
+                <div class="text-success fs-1 fw-bold" id="avgScore">-</div>
+                <div class="text-muted small">Average Score %</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3">
+                <div class="text-warning fs-1 fw-bold" id="weakCount">-</div>
+                <div class="text-muted small">Weak Topics</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3">
+                <div class="text-info fs-1 fw-bold" id="strongCount">-</div>
+                <div class="text-muted small">Strong Topics</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Score Over Time</h6>
+                    <canvas id="lineChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Performance by Topic</h6>
+                    <canvas id="barChart" height="160"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-2">Weak Topics (Score < 60%)</h6>
+                    <div id="weakTopics" class="text-muted">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function loadDashboard() {
+    const res = await fetch("/dashboard/data");
+    const d = await res.json();
+
+    document.getElementById("totalQuizzes").textContent = d.total_quizzes;
+    document.getElementById("avgScore").textContent = d.avg_score + "%";
+    document.getElementById("weakCount").textContent = d.weak_topics.length;
+    document.getElementById("strongCount").textContent = d.topic_labels.length - d.weak_topics.length;
+
+    document.getElementById("weakTopics").innerHTML = d.weak_topics.length
+        ? d.weak_topics.map(t => `<span class="badge bg-danger me-2 mb-1">${t}</span>`).join("")
+        : '<span class="text-success">No weak topics! Great job 🎉</span>';
+
+    if (d.scores_over_time.length) {
+        new Chart(document.getElementById("lineChart"), {
+            type: "line",
+            data: {
+                labels: d.scores_over_time.map(s => s.date),
+                datasets: [{
+                    label: "Score %",
+                    data: d.scores_over_time.map(s => s.score),
+                    borderColor: "#0d6efd",
+                    backgroundColor: "rgba(13,110,253,0.1)",
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {scales: {y: {min: 0, max: 100}}, plugins: {legend: {display: false}}}
+        });
+    }
+
+    if (d.topic_labels.length) {
+        new Chart(document.getElementById("barChart"), {
+            type: "bar",
+            data: {
+                labels: d.topic_labels,
+                datasets: [{
+                    label: "Avg Score %",
+                    data: d.topic_scores,
+                    backgroundColor: d.topic_scores.map(s => s >= 60 ? "#198754" : "#dc3545")
+                }]
+            },
+            options: {scales: {y: {min: 0, max: 100}}, plugins: {legend: {display: false}}}
+        });
+    }
+}
+loadDashboard();
+</script>
+{% endblock %}

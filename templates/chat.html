@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}AI Tutor - StudyAI{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold"><i class="fas fa-comments text-primary me-2"></i>AI Chat Tutor</h4>
+                <button class="btn btn-sm btn-outline-danger" onclick="clearChat()">
+                    <i class="fas fa-trash me-1"></i>Clear Chat
+                </button>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div id="chatBox" class="chat-box p-3">
+                        {% if not history %}
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-robot fa-3x mb-3 text-primary opacity-50"></i>
+                            <p>Hi! I'm your AI tutor. Ask me anything about your studies!</p>
+                        </div>
+                        {% endif %}
+                        {% for msg in history %}
+                        <div class="chat-message {{ 'user-msg' if msg.role == 'user' else 'ai-msg' }}">
+                            <div class="msg-bubble">
+                                <strong>{{ '🧑 You' if msg.role == 'user' else '🤖 AI Tutor' }}</strong>
+                                <div class="msg-content">{{ msg.message }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="chat-input-area p-3 border-top">
+                        <div class="input-group">
+                            <input type="text" id="userInput" class="form-control" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') sendMessage()">
+                            <button class="btn btn-primary" onclick="sendMessage()" id="sendBtn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const chatBox = document.getElementById("chatBox");
+
+function scrollBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+scrollBottom();
+
+function appendMessage(role, content) {
+    const div = document.createElement("div");
+    div.className = `chat-message ${role === "user" ? "user-msg" : "ai-msg"}`;
+    div.innerHTML = `<div class="msg-bubble">
+        <strong>${role === "user" ? "🧑 You" : "🤖 AI Tutor"}</strong>
+        <div class="msg-content">${marked.parse(content)}</div>
+    </div>`;
+    chatBox.appendChild(div);
+    scrollBottom();
+}
+
+async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    appendMessage("user", msg);
+    input.value = "";
+    document.getElementById("sendBtn").disabled = true;
+
+    const typing = document.createElement("div");
+    typing.className = "chat-message ai-msg";
+    typing.id = "typing";
+    typing.innerHTML = `<div class="msg-bubble"><em>🤖 AI Tutor is typing...</em></div>`;
+    chatBox.appendChild(typing);
+    scrollBottom();
+
+    const res = await fetch("/chat/send", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: msg})
+    });
+    const data = await res.json();
+    document.getElementById("typing")?.remove();
+    appendMessage("assistant", data.response || data.error);
+    document.getElementById("sendBtn").disabled = false;
+}
+
+async function clearChat() {
+    if (!confirm("Clear all chat history?")) return;
+    await fetch("/chat/clear", {method: "POST"});
+    chatBox.innerHTML = `<div class="text-center text-muted py-5"><i class="fas fa-robot fa-3x mb-3 text-primary opacity-50"></i><p>Chat cleared. Ask me anything!</p></div>`;
+}
+</script>
+{% endblock %}

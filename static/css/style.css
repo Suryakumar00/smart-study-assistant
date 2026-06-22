@@ -1,0 +1,83 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.auth-body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+}
+
+/* Feature Cards */
+.feature-card {
+    border-radius: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+}
+.feature-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+/* Chat */
+.chat-box {
+    height: 480px;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+.chat-message {
+    margin-bottom: 12px;
+}
+.user-msg {
+    text-align: right;
+}
+.user-msg .msg-bubble {
+    display: inline-block;
+    background: #0d6efd;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 16px 16px 4px 16px;
+    max-width: 75%;
+    text-align: left;
+}
+.ai-msg .msg-bubble {
+    display: inline-block;
+    background: white;
+    border: 1px solid #e0e0e0;
+    padding: 10px 14px;
+    border-radius: 16px 16px 16px 4px;
+    max-width: 85%;
+}
+.msg-content p:last-child { margin-bottom: 0; }
+.chat-input-area { background: white; }
+
+/* Notes & Plan output */
+.notes-output, .plan-content {
+    min-height: 200px;
+}
+.notes-content h1, .notes-content h2, .notes-content h3,
+.plan-content h1, .plan-content h2, .plan-content h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 1rem;
+}
+
+/* Navbar */
+.navbar { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+/* Cards */
+.card { border-radius: 12px; }

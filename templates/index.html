@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Home - StudyAI{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary"><i class="fas fa-brain me-2"></i>Welcome, {{ current_user.username }}!</h1>
+        <p class="lead text-muted">Your AI-powered study companion. What would you like to do today?</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <a href="/chat" class="text-decoration-none">
+                <div class="card feature-card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary-subtle mb-3"><i class="fas fa-comments fa-2x text-primary"></i></div>
+                        <h5 class="fw-bold">AI Chat Tutor</h5>
+                        <p class="text-muted small">Ask anything. Get instant explanations, examples, and step-by-step solutions.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/notes" class="text-decoration-none">
+                <div class="card feature-card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-success-subtle mb-3"><i class="fas fa-sticky-note fa-2x text-success"></i></div>
+                        <h5 class="fw-bold">Smart Notes</h5>
+                        <p class="text-muted small">Upload PDFs or paste text. Get summaries, bullet points & key highlights.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/quiz" class="text-decoration-none">
+                <div class="card feature-card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-warning-subtle mb-3"><i class="fas fa-question-circle fa-2x text-warning"></i></div>
+                        <h5 class="fw-bold">Quiz Generator</h5>
+                        <p class="text-muted small">Auto-generate MCQs, short answers & coding questions on any topic.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/planner" class="text-decoration-none">
+                <div class="card feature-card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-info-subtle mb-3"><i class="fas fa-calendar-alt fa-2x text-info"></i></div>
+                        <h5 class="fw-bold">Study Planner</h5>
+                        <p class="text-muted small">Generate personalized study schedules based on your syllabus & deadlines.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="/dashboard" class="text-decoration-none">
+                <div class="card feature-card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-danger-subtle mb-3"><i class="fas fa-chart-bar fa-2x text-danger"></i></div>
+                        <h5 class="fw-bold">Performance Dashboard</h5>
+                        <p class="text-muted small">Track your progress, accuracy, weak topics & improvement over time.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 shadow-sm border-0 bg-light">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon bg-secondary-subtle mb-3"><i class="fas fa-rocket fa-2x text-secondary"></i></div>
+                    <h5 class="fw-bold text-muted">More Coming Soon</h5>
+                    <p class="text-muted small">Voice assistant, exam simulator, code helper & more features on the way!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
